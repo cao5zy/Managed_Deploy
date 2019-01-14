@@ -65,3 +65,9 @@ In the init process, it downloads the `v0.1.1` from git and then download the ot
 banyan deploy -p project1 -c dev
 ```
 The final step is `deploy` which make the microservices run in local development or remote production servers.
+
+### deploy the specified roles
+Sometimes, especially when you develop your microservice with other microservices, you would expect to deploy your own microservice container instead all microservices. The subcommand `--role-tags` can help.
+```
+banyan deploy -p project1 -c dev --role-tags="project1_main"
+```
