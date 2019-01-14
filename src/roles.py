@@ -38,7 +38,7 @@ roles: a list for role. the sturcture of role can be reference in get_roles
   become_method: sudo
   {{ remote_name }}
   roles:
-{% for role in objs %}    - {{role}}
+{% for role in objs %}    - {'role':'{{role}}', 'tags':'{{role}}'}
 {% endfor %}
 ...
   
