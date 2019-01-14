@@ -23,13 +23,22 @@ This process will take two effects:
 1. Generate the structure and files for ansible script.
 2. Gather all variables together with values from all of the defaults section of the roles and write them to `predefined_variables` node of `dev.cfg`.
 
+### Build without modifying the configuration
 If you want to skip the second effect, please run the following command.
 ```
 banyan build -p project1 -c dev --only-structure=True
 ```
+
+### Build for remote deployment
 The above instructions are for local environment. If you want to build the script for remote environment, please follow the command below.
 ```
 banyan build -p project1 -c dev -r 10.0.0.1 -k ./remote_key -n remote_login
+```
+
+### Build authentication layer
+The autentication layer is designed to protect your microservices. This is useful when you expose your microservices to a none private environment. Of course, when you develop your microservice, you don't need it.
+```
+banyan build -p project1 -c dev --build-gate=True
 ```
 
 ## config
