@@ -23,10 +23,10 @@
 - name: deploy the nginx server
   docker_container:
     name: "{{'{{'}}microservice_gate{{'}}'}}"
-    image: "{{'{{'}}microservice_gate_image_name{{'}}'}}:{{'{{'}}microservice_gate_image_git_version{{'}}'}}"
+    image: "alancao/microservice_gate:1.0.1"
     ports:
       - "{{'{{'}}public_port{{'}}'}}:{{'{{'}}public_port{{'}}'}}"
-    restart: yes
+    recreate: yes
     volumes:
       - "{{'{{'}}microservice_gate_root{{'}}'}}/logs:/usr/local/openresty/nginx/logs:Z"
       - "{{'{{'}}microservice_gate_root{{'}}'}}/conf.d:/usr/local/openresty/nginx/conf.d:Z"
