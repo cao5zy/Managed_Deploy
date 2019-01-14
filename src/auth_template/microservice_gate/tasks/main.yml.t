@@ -27,6 +27,9 @@
     ports:
       - "{{'{{'}}public_port{{'}}'}}:{{'{{'}}public_port{{'}}'}}"
     recreate: yes
+    links:
+{% for item in items %}      - "{{'{{'}}{{item.project_name}}{{'}}'}}:{{'{{'}}{{item.project_name}}{{'}}'}}"
+{% endfor %}
     volumes:
       - "{{'{{'}}microservice_gate_root{{'}}'}}/logs:/usr/local/openresty/nginx/logs:Z"
       - "{{'{{'}}microservice_gate_root{{'}}'}}/conf.d:/usr/local/openresty/nginx/conf.d:Z"
