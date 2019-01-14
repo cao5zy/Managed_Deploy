@@ -6,7 +6,7 @@ requires = ['demjson>=2.2.4', 'jinja2>=2.10', 'pyyaml>=3.13', 'shell>=1.0.1', 'c
 
 setup(
     name = name,
-    version = '2.0.3',
+    version = '2.0.4',
     scripts = ["scripts/banyan"],
     author = 'Zongying Cao',
     author_email = 'zongying.cao@dxc.com',

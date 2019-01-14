@@ -11,6 +11,7 @@ from .util import get_config_path, get_deploy_path, get_deploy_host, get_deploy_
 from .tools.data_convert import dict2assignments
 import json
 from slogger import Logger
+from .deploy_info import DeployInfo
 
 logger = Logger.getLogger(__name__)
 
@@ -39,9 +40,12 @@ def build_deploy_script(project_name, config_name, only_structure=False, remote_
     build_deploy_script_internal(project_name, config_name, only_structure, remote_dict)
     
 def build_deploy_script_internal(project_name, config_name, only_structure=False, remote_dict = None):
+    deployInfo = DeployInfo()
+    deploy_path = lambda:get_deploy_path(project_name, config_name)
+    
     def yml_file_folder(): return put_folder(os.path.abspath(get_deploy_path(project_name, config_name)))
-    def yml_file_path(): return os.path.join(yml_file_folder(), "main.yml")
-    def host_file(): return os.path.join(yml_file_folder(), logger.title("host file name").debug(get_file_only_name(yml_file_path())) + ".host")
+    def yml_file_path(): return os.path.join(deploy_path(), deployInfo.playbook_name())
+    def host_file(): return os.path.join(deploy_path(), deployInfo.host_file_name())
     def bash_file(): return os.path.join(yml_file_folder(), get_file_only_name(yml_file_path()) + ".sh")
     def get_roles_data():return roles_load(logger.title("config_path").debug(get_config_path(project_name, config_name)))
     def write_playbook(content): open(put_file(yml_file_path()), 'w').write(content)

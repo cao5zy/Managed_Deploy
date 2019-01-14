@@ -9,13 +9,13 @@ def setup_get():
 
 @with_setup(setup_get, remove_test_folder)
 def test_get():
-    project_name = "banyan"
-    giturl = "https://github.com/cao5zy/banyan"
-    tag = "v0.0.3"
+    project_name = "testrepo"
+    giturl = "https://github.com/cao5zy/testrepo"
+    tag = "v0.0.1"
     location = test_root()
     get_tag(giturl, tag, location=location)
 
-    assert_that(os.path.join(test_root(), "banyan")).exists()
+    assert_that(os.path.join(test_root(), "testrepo")).exists()
 
 @with_setup(setup_get, remove_test_folder)
 def test_get_from_private_repo():
