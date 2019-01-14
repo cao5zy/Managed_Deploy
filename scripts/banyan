@@ -1,0 +1,5 @@
+#! /usr/bin/python3
+
+from mc_banyan import main
+
+main()
