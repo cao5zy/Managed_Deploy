@@ -44,7 +44,6 @@ def build_deploy_script_internal(project_name, config_name, only_structure=False
     deployInfo = DeployInfo(deploy_path())
     
     def yml_file_folder(): return put_folder(os.path.abspath(deploy_path()))
-    def host_file(): return os.path.join(deploy_path(), deployInfo.host_file_name())
     def bash_file(): return os.path.join(yml_file_folder(), get_file_only_name(deployInfo.playbook_path()) + ".sh")
     def get_roles_data():return roles_load(logger.title("config_path").debug(get_config_path(project_name, config_name)))
     def write_playbook(content): open(put_file(deployInfo.playbook_path()), 'w').write(content)
@@ -63,7 +62,7 @@ def build_deploy_script_internal(project_name, config_name, only_structure=False
     def default_vals(): return all_defaults(yml_file_folder(), [role["name"] for role in get_roles_data()])
 
     # build inventory files on roles
-    write_defaults(host_file(), default_vals(), remote_addr = None if remote_dict == None else remote_dict["remote_addr"])
+    write_defaults(deployInfo.host_file_path(), default_vals(), remote_addr = None if remote_dict == None else remote_dict["remote_addr"])
 
     # write the defaults to cfg file
     (F(lambda config_path: demjson.decode_file(config_path)) >> \
@@ -76,7 +75,7 @@ def build_deploy_script_internal(project_name, config_name, only_structure=False
     open(bash_file(), "w") \
         .write("sudo ansible-playbook ./{yml_file} -i ./{host_file}" \
                .format(yml_file = get_file_name(put_file(deployInfo.playbook_path())), \
-                       host_file = get_file_name(host_file()) \
+                       host_file = get_file_name(deployInfo.host_file_path()) \
                ) \
         )
 
