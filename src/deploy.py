@@ -40,15 +40,14 @@ def build_deploy_script(project_name, config_name, only_structure=False, remote_
     build_deploy_script_internal(project_name, config_name, only_structure, remote_dict)
     
 def build_deploy_script_internal(project_name, config_name, only_structure=False, remote_dict = None):
-    deployInfo = DeployInfo()
     deploy_path = lambda:get_deploy_path(project_name, config_name)
+    deployInfo = DeployInfo(deploy_path())
     
-    def yml_file_folder(): return put_folder(os.path.abspath(get_deploy_path(project_name, config_name)))
-    def yml_file_path(): return os.path.join(deploy_path(), deployInfo.playbook_name())
+    def yml_file_folder(): return put_folder(os.path.abspath(deploy_path()))
     def host_file(): return os.path.join(deploy_path(), deployInfo.host_file_name())
-    def bash_file(): return os.path.join(yml_file_folder(), get_file_only_name(yml_file_path()) + ".sh")
+    def bash_file(): return os.path.join(yml_file_folder(), get_file_only_name(deployInfo.playbook_path()) + ".sh")
     def get_roles_data():return roles_load(logger.title("config_path").debug(get_config_path(project_name, config_name)))
-    def write_playbook(content): open(put_file(yml_file_path()), 'w').write(content)
+    def write_playbook(content): open(put_file(deployInfo.playbook_path()), 'w').write(content)
 
     # write data to file
     write_playbook(roles_build(get_roles_data(), remote_host = None if remote_dict == None else 'remote', remote_name = remote_dict["remote_user"] if remote_dict else None))
@@ -76,7 +75,7 @@ def build_deploy_script_internal(project_name, config_name, only_structure=False
     # build the bash file
     open(bash_file(), "w") \
         .write("sudo ansible-playbook ./{yml_file} -i ./{host_file}" \
-               .format(yml_file = get_file_name(put_file(yml_file_path())), \
+               .format(yml_file = get_file_name(put_file(deployInfo.playbook_path())), \
                        host_file = get_file_name(host_file()) \
                ) \
         )
