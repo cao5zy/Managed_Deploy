@@ -15,23 +15,26 @@ from .deploy_info import DeployInfo
 
 logger = Logger.getLogger(__name__)
 
-def run_deploy(configuration_path):
+def run_deploy(project_name, config_name, tags = None):
     '''configuration_path: it is the folder path which contains the main.sh to launch the deploy script'''
     import subprocess
-    
-    def run(current_path):
-        try:
-            os.chdir(configuration_path)
-            p = subprocess.Popen("bash main.sh", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-            while p.poll() is None:
-                line = p.stdout.readline()
-                if line:
-                    print(line.strip())
-        finally:
-            os.chdir(current_path)
+    def run(deployInfo):
+        def build_base_command():
+            return "sudo ansible-playbook ./{yml_file} -i ./{host_file}".format(yml_file = deployInfo.playbook_name(), host_file = deployInfo.host_file_name())
 
-    run(os.getcwd())
+        def build_tag(base_command):
+            return base_command if tags == None or len(tags) == 0 else \
+                '{base_command} --tags "{tags}"'.format(base_command = base_command, tags = ",".join(tags))
+        
+        p = subprocess.Popen((F(build_base_command) >> F(build_tag))(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = deployInfo.deploy_folder_path())
+
+        while p.poll() is None:
+            line = p.stdout.readline()
+            if line:
+                print(line.strip())
+
+    run(DeployInfo(get_deploy_path(project_name, config_name)))
 
 def build_deploy_script(project_name, config_name, only_structure=False, remote_dict = None, gate = False):
     from .gate import build_gate
@@ -70,14 +73,6 @@ def build_deploy_script_internal(project_name, config_name, only_structure=False
         F(lambda json_data: json.dumps(json_data, indent=4, ensure_ascii=False)) >> \
         F(lambda content: open(get_config_path(project_name, config_name), 'w').write(content)))(get_config_path(project_name, config_name))
 
-
-    # build the bash file
-    open(bash_file(), "w") \
-        .write("sudo ansible-playbook ./{yml_file} -i ./{host_file}" \
-               .format(yml_file = get_file_name(put_file(deployInfo.playbook_path())), \
-                       host_file = get_file_name(deployInfo.host_file_path()) \
-               ) \
-        )
 
     def build_ansible_cfg():
         if remote_dict == None:
