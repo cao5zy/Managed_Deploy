@@ -24,7 +24,7 @@ def run(options):
             not (options.key_file == None or options.user_name == None or options.remote_addr == None) else None
         
     if options.command == "deploy":
-        run_deploy(options.projectname, options.cfg)
+        run_deploy(options.projectname, options.cfg, options.role_tags)
     elif options.command == "build":
         build_deploy_script(options.projectname, options.cfg, only_structure = options.only_structure, remote_dict = get_remote_dict(), gate = options.build_gate)
     elif options.command == "config":

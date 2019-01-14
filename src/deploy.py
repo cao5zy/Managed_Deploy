@@ -27,7 +27,7 @@ def run_deploy(project_name, config_name, tags = None):
             return base_command if tags == None or len(tags) == 0 else \
                 '{base_command} --tags "{tags}"'.format(base_command = base_command, tags = ",".join(tags))
         
-        p = subprocess.Popen((F(build_base_command) >> F(build_tag))(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = deployInfo.deploy_folder_path())
+        p = subprocess.Popen(logger.title('cli').debug((F(build_base_command) >> F(build_tag))()), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = deployInfo.deploy_folder_path())
 
         while p.poll() is None:
             line = p.stdout.readline()
