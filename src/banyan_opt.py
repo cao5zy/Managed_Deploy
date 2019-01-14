@@ -64,6 +64,13 @@ opt_configs = [
         "dest": "build_gate",
         "help": "default is false to not build the gate",
         "default": False
+    },
+    {
+        "short": "o",
+        "long": "role-tags",
+        "dest": "role_tags",
+        "help": "specify role tags to only run the roles",
+        "default": None
     }
 ]
 def get_options(sys_args = None):
@@ -92,7 +99,7 @@ def get_options(sys_args = None):
                 self.remote_addr = options.remote_addr
                 self.user_name = options.user_name
                 self.build_gate = options.build_gate == True or (isinstance(options.build_gate, str) and  options.build_gate.lower() == "true")
-                
+                self.role_tags = None if options.role_tags == None else options.role_tags.split(',')
         return dumy()
 
     return configure_parser(OptionParser())
