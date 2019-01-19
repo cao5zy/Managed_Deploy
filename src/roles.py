@@ -80,8 +80,13 @@ def link_src_to_deploy(rolesdata):
             return target_path
         
         def link_path(source_path, target_link_path):
-            if os.path.exists(source_path) and not Path(target_link_path).is_symlink():
-                os.symlink(source_path, target_link_path)
+            if not os.path.exists(source_path): return
+
+            if Path(target_link_path).is_symlink(): os.remove(target_link_path)
+
+            if os.path.exists(target_link_path): raise ValueError("the path %s can't be removed"% target_link_path)
+
+            os.symlink(source_path, target_link_path)
 
         link_path(os.path.abspath(os.path.join(project_folder, src_name)),  os.path.join(\
                                                                                          put(os.path.abspath(os.path.join(project_folder, link_folder))),\
