@@ -38,13 +38,23 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
                       F(proxy_mapping))(get_config_path(project_name, config_name))
         }
 
-    def proxy_mapping(all_config):
+    def build_mapping():
+        '''convert the data
+[a:b] to 
+[[a,b]] '''
+        return [] if proxy_mapping == None else \
+            list(map(lambda item: [item.split(':')[0], item.split(':')[1]], proxy_mapping if isinstance(proxy_mapping, list) else [proxy_mapping]))
+    
+    def proxy_mapping(all_config, mapping = build_mapping()):
+        def get_mapping(item):
+            return list(filter(lambda obj: obj[0] == item['project_name'], mapping))
+        
         def build(item):
             return {
                 'project_name': item['project_name'],
                 'project_path': item['project_path'],
                 'role_name': item['role_name'],
-                'proxy_mapping': '/_api/{}/'.format(item['project_name'])
+                'proxy_mapping': '/_api/{}/'.format(item['project_name']) if len(get_mapping(item)) == 0 else get_mapping(item)[0][1]
             }
 
         return list(map(lambda item: build(item), all_config))
