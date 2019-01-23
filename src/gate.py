@@ -33,7 +33,9 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
     def data():
         return {
             "project_name": "roles",
-            "items": proxy_mapping(remove_duplicate(load_all_config(get_config_path(project_name, config_name))))
+            "items": (F(load_all_config) >> \
+                      F(remove_duplicate) >> \
+                      F(proxy_mapping))(get_config_path(project_name, config_name))
         }
 
     def proxy_mapping(all_config):
