@@ -13,7 +13,7 @@ logger = Logger.getLogger(__name__)
 _auth_db_name = "auth_db"
 _microservice_gate_name = "microservice_gate"
 
-def build_gate(project_name, config_name, build_gate):
+def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
     def remove_duplicate(projects):
         def work(result, item):
             if isinstance(result, list):
@@ -28,7 +28,7 @@ def build_gate(project_name, config_name, build_gate):
                     return [result, item]
                 
                 
-        return reduce(work, projects)
+        return projects if len(projects) == 1 else  reduce(work, projects)
     
     def data():
         return {
