@@ -28,13 +28,24 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
                     return [result, item]
                 
                 
-        return projects if len(projects) == 1 else  reduce(work, projects)
+        return projects if len(projects) == 1 else [] if len(projects) == 0 else reduce(work, projects)
     
     def data():
         return {
             "project_name": "roles",
-            "items": remove_duplicate(load_all_config(get_config_path(project_name, config_name)))
+            "items": proxy_mapping(remove_duplicate(load_all_config(get_config_path(project_name, config_name))))
         }
+
+    def proxy_mapping(all_config):
+        def build(item):
+            return {
+                'project_name': item['project_name'],
+                'project_path': item['project_path'],
+                'role_name': item['role_name'],
+                'proxy_mapping': '/_api/{}/'.format(item['project_name'])
+            }
+
+        return list(map(lambda item: build(item), all_config))
     
     def output_path():
         return os.path.join(get_project_path(project_name), "deploy")

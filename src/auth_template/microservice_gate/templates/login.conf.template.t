@@ -11,7 +11,7 @@ server {
        access_log				logs/access.log;
 
 {% for item in items %}
-      location /_api/{{item.project_name}}/ {
+      location {{item.proxy_mapping}} {
 	resolver	{{'{{'}}auth_db_ip{{'}}'}} valid=30s;
 	set 	$auth_db {{'{{'}}auth_db_ip{{'}}'}};
 	set 	$auth_db_port {{'{{'}}auth_db_port{{'}}'}};

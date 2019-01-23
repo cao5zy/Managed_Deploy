@@ -1,5 +1,5 @@
 from ..gate import build_gate
-from assertpy import assert_that
+from assertpy import assert_that, contents_of
 from nose import with_setup
 from codegenhelper import test_root, init_test_folder, remove_test_folder, put_folder, put_file
 import os
@@ -46,3 +46,16 @@ def test_build_gate():
 
     config = demjson.decode_file(os.path.join(test_root(), project_name, "deploy", "dev.cfg"))
     assert_that(config["roles_seq"]).contains("auth_db").contains("microservice_gate")
+
+@with_setup(init_test_build_gate, remove_test_folder)
+def test_build_gate_with_proxy_mapping():
+    try:
+        init_root(test_root())
+        build_gate(project_name, config_name, True, "inventory_service:/")
+    finally:
+        init_root(os.getcwd())
+
+    yml_content = contents_of(os.path.join(test_root(), project_name, "deploy", "roles", "microservice_gate", "templates", "login.conf.template"))
+
+    assert_that(yml_content).contains('location / {') \
+        .contains('http://inventory_service/;')
