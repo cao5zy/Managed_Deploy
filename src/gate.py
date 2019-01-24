@@ -36,7 +36,9 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
             "items": (F(load_all_config) >> \
                       F(remove_duplicate) >> \
                       F(proxy_mapping) >> \
-                      F(root_path_at_last))(get_config_path(project_name, config_name))
+                      F(root_path_at_last) >> \
+                      F(no_auth)
+            )(get_config_path(project_name, config_name))
         }
 
     def build_no_auth_list():
@@ -53,6 +55,7 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
                 'proxy_mapping': item['proxy_mapping'],
                 'noauth': True if item['project_name'] in no_auth_list else False
             }
+        return list(map(lambda item: build(item), all_config))
     def build_mapping():
         '''convert the data
 [a:b] to 

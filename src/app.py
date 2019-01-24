@@ -26,7 +26,7 @@ def run(options):
     if options.command == "deploy":
         run_deploy(options.projectname, options.cfg, options.role_tags)
     elif options.command == "build":
-        build_deploy_script(options.projectname, options.cfg, only_structure = options.only_structure, remote_dict = get_remote_dict(), gate = options.build_gate, proxy_mapping = options.proxy_mapping)
+        build_deploy_script(options.projectname, options.cfg, only_structure = options.only_structure, remote_dict = get_remote_dict(), gate = options.build_gate, proxy_mapping = options.proxy_mapping, noauth = options.noauth)
     elif options.command == "config":
         deploy_config(options.projectname, options.cfg)
     elif options.command == "get":

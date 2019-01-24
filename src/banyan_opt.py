@@ -79,6 +79,14 @@ opt_configs = [
         "action": "append",
         "help": "specify the proxy mapping",
         "default": None
+    },
+    {
+        "short": "a",
+        "long": "noauth",
+        "dest": "noauth",
+        "action": "append",
+        "help": "do not specify the auth for project",
+        "default": None
     }
 ]
 def get_options(sys_args = None):
@@ -111,6 +119,7 @@ def get_options(sys_args = None):
                 self.build_gate = options.build_gate == True or (isinstance(options.build_gate, str) and  options.build_gate.lower() == "true")
                 self.role_tags = None if options.role_tags == None else options.role_tags.split(',')
                 self.proxy_mapping = options.proxy_mapping
+                self.noauth = options.noauth
                 
         return dumy()
 
