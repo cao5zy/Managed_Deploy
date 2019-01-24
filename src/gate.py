@@ -35,7 +35,8 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
             "project_name": "roles",
             "items": (F(load_all_config) >> \
                       F(remove_duplicate) >> \
-                      F(proxy_mapping))(get_config_path(project_name, config_name))
+                      F(proxy_mapping) >> \
+                      F(root_path_at_last))(get_config_path(project_name, config_name))
         }
 
     def build_mapping():
@@ -58,7 +59,13 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
             }
 
         return list(map(lambda item: build(item), all_config))
-    
+
+    def root_path_at_last(all_config):
+        '''make sure the root path / is at the last'''
+        sorted_list = sorted(all_config, key = lambda n:n['proxy_mapping'])
+        sorted_list.reverse()
+        return sorted_list
+        
     def output_path():
         return os.path.join(get_project_path(project_name), "deploy")
 
