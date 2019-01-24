@@ -13,7 +13,7 @@ logger = Logger.getLogger(__name__)
 _auth_db_name = "auth_db"
 _microservice_gate_name = "microservice_gate"
 
-def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
+def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noauth = None):
     def remove_duplicate(projects):
         def work(result, item):
             if isinstance(result, list):
@@ -39,6 +39,20 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None):
                       F(root_path_at_last))(get_config_path(project_name, config_name))
         }
 
+    def build_no_auth_list():
+        return [] if noauth == None else \
+            noauth if isinstance(noauth, list) else \
+            [noauth]
+    
+    def no_auth(all_config, no_auth_list = build_no_auth_list()):
+        def build(item):
+            return {
+                'project_name': item['project_name'],
+                'project_path': item['project_path'],
+                'role_name': item['role_name'],
+                'proxy_mapping': item['proxy_mapping'],
+                'noauth': True if item['project_name'] in no_auth_list else False
+            }
     def build_mapping():
         '''convert the data
 [a:b] to 

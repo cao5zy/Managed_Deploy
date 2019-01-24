@@ -59,3 +59,15 @@ def test_build_gate_with_proxy_mapping():
 
     assert_that(yml_content).contains('location / {') \
         .contains('http://inventory_service/;')
+
+@with_setup(init_test_build_gate, remove_test_folder)
+def test_build_gate_with_no_auth():
+    try:
+        init_root(test_root())
+        build_gate(project_name, config_name, True, "inventory_service:/", "inventory_service")
+    finally:
+        init_root(os.getcwd())
+
+    yml_content = contents_of(os.path.join(test_root(), project_name, "deploy", "roles", "microservice_gate", "templates", "login.conf.template"))
+
+    assert_that(yml_content.replace(os.linesep, '')).does_not_contain('location / {\tresolver	{{auth_db_ip}} valid=30s')

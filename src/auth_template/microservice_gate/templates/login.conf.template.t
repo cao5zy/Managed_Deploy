@@ -58,11 +58,13 @@ server {
 
 {% for item in items %}
       location {{item.proxy_mapping}} {
-	resolver	{{'{{'}}auth_db_ip{{'}}'}} valid=30s;
+{% if item.noauth == False %}
+        resolver	{{'{{'}}auth_db_ip{{'}}'}} valid=30s;
 	set 	$auth_db {{'{{'}}auth_db_ip{{'}}'}};
 	set 	$auth_db_port {{'{{'}}auth_db_port{{'}}'}};
 	rewrite_by_lua_file		/lua_app/access.lua;
-      
+{% endif %}
+
 	proxy_pass http://{{item.project_name}}/;
 	proxy_set_header Host $host:$server_port;
 	log_subrequest on;
