@@ -10,23 +10,6 @@ server {
        server_name				{{'{{'}}microservice_gate{{'}}'}};
        access_log				logs/access.log;
 
-{% for item in items %}
-      location {{item.proxy_mapping}} {
-	resolver	{{'{{'}}auth_db_ip{{'}}'}} valid=30s;
-	set 	$auth_db {{'{{'}}auth_db_ip{{'}}'}};
-	set 	$auth_db_port {{'{{'}}auth_db_port{{'}}'}};
-	rewrite_by_lua_file		/lua_app/access.lua;
-      
-	proxy_pass http://{{item.project_name}}/;
-	proxy_set_header Host $host:$server_port;
-	log_subrequest on;
-	log_not_found on;
-	error_log logs/{{item.project_name}}.error.log debug;
-	access_log logs/{{item.project_name}}.access.log;
-	allow	   all;
-      }
-
-{% endfor %}
 
        location /signup {
              resolver	{{'{{'}}auth_db_ip{{'}}'}} valid=30s;
@@ -72,5 +55,23 @@ server {
        	     allow	   all;
 
        }
+
+{% for item in items %}
+      location {{item.proxy_mapping}} {
+	resolver	{{'{{'}}auth_db_ip{{'}}'}} valid=30s;
+	set 	$auth_db {{'{{'}}auth_db_ip{{'}}'}};
+	set 	$auth_db_port {{'{{'}}auth_db_port{{'}}'}};
+	rewrite_by_lua_file		/lua_app/access.lua;
+      
+	proxy_pass http://{{item.project_name}}/;
+	proxy_set_header Host $host:$server_port;
+	log_subrequest on;
+	log_not_found on;
+	error_log logs/{{item.project_name}}.error.log debug;
+	access_log logs/{{item.project_name}}.access.log;
+	allow	   all;
+      }
+
+{% endfor %}
 
 }

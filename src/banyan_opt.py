@@ -71,6 +71,14 @@ opt_configs = [
         "dest": "role_tags",
         "help": "specify role tags to only run the roles",
         "default": None
+    },
+    {
+        "short": "m",
+        "long": "proxy-mapping",
+        "dest": "proxy_mapping",
+        "action": "append",
+        "help": "specify the proxy mapping",
+        "default": None
     }
 ]
 def get_options(sys_args = None):
@@ -81,7 +89,9 @@ def get_options(sys_args = None):
                               "--" + opt["long"], \
                               dest=opt["dest"] if "dest" in opt else None, \
                               help=opt["help"] if "help" in opt else None, \
-                              default = opt["default"] if "default" in opt else None)
+                              default = opt["default"] if "default" in opt else None, \
+                              action = opt["action"] if "action" in opt else None
+            )
 
         [add_opt(opt) for opt in opt_configs]
         
@@ -100,6 +110,8 @@ def get_options(sys_args = None):
                 self.user_name = options.user_name
                 self.build_gate = options.build_gate == True or (isinstance(options.build_gate, str) and  options.build_gate.lower() == "true")
                 self.role_tags = None if options.role_tags == None else options.role_tags.split(',')
+                self.proxy_mapping = options.proxy_mapping
+                
         return dumy()
 
     return configure_parser(OptionParser())

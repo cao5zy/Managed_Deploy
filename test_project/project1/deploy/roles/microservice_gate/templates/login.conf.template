@@ -16,39 +16,6 @@ server {
        access_log				logs/access.log;
 
 
-      location /_api/project2/ {
-	resolver	{{auth_db_ip}} valid=30s;
-	set 	$auth_db {{auth_db_ip}};
-	set 	$auth_db_port {{auth_db_port}};
-	rewrite_by_lua_file		/lua_app/access.lua;
-      
-	proxy_pass http://project2/;
-	proxy_set_header Host $host:$server_port;
-	log_subrequest on;
-	log_not_found on;
-	error_log logs/project2.error.log debug;
-	access_log logs/project2.access.log;
-	allow	   all;
-      }
-
-
-      location /_api/project1/ {
-	resolver	{{auth_db_ip}} valid=30s;
-	set 	$auth_db {{auth_db_ip}};
-	set 	$auth_db_port {{auth_db_port}};
-	rewrite_by_lua_file		/lua_app/access.lua;
-      
-	proxy_pass http://project1/;
-	proxy_set_header Host $host:$server_port;
-	log_subrequest on;
-	log_not_found on;
-	error_log logs/project1.error.log debug;
-	access_log logs/project1.access.log;
-	allow	   all;
-      }
-
-
-
        location /signup {
              resolver	{{auth_db_ip}} valid=30s;
              set 	$auth_db {{auth_db_ip}};
@@ -93,5 +60,39 @@ server {
        	     allow	   all;
 
        }
+
+
+      location /_api/project2/ {
+	resolver	{{auth_db_ip}} valid=30s;
+	set 	$auth_db {{auth_db_ip}};
+	set 	$auth_db_port {{auth_db_port}};
+	rewrite_by_lua_file		/lua_app/access.lua;
+      
+	proxy_pass http://project2/;
+	proxy_set_header Host $host:$server_port;
+	log_subrequest on;
+	log_not_found on;
+	error_log logs/project2.error.log debug;
+	access_log logs/project2.access.log;
+	allow	   all;
+      }
+
+
+      location / {
+	resolver	{{auth_db_ip}} valid=30s;
+	set 	$auth_db {{auth_db_ip}};
+	set 	$auth_db_port {{auth_db_port}};
+	rewrite_by_lua_file		/lua_app/access.lua;
+      
+	proxy_pass http://project1/;
+	proxy_set_header Host $host:$server_port;
+	log_subrequest on;
+	log_not_found on;
+	error_log logs/project1.error.log debug;
+	access_log logs/project1.access.log;
+	allow	   all;
+      }
+
+
 
 }
