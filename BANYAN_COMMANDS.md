@@ -40,6 +40,11 @@ The autentication layer is designed to protect your microservices. This is usefu
 ```
 banyan build -p project1 -c dev --build-gate=True
 ```
+This command will put all of the microservices behind the authentication layer. But sometimes, it is required to get some microservcies public. 
+```
+banyan build -p project1 -c dev --build-gate=True --noauth=project2
+```
+This command will make project2 accessed without authentication.
 
 ### Build for customized proxy mapping
 Currently, the proxy mapping is default to the microservice project name. There is a way to let you control the proxy mapping.
