@@ -41,6 +41,50 @@ The autentication layer is designed to protect your microservices. This is usefu
 banyan build -p project1 -c dev --build-gate=True
 ```
 
+### Build for customized proxy mapping
+Currently, the proxy mapping is default to the microservice project name. There is a way to let you control the proxy mapping.
+
+To explain it clearly, here is a exmaple.  
+The structure of microservice projects.
+```
+workspace
+  |-project1
+  |-project2
+```
+The build command with default proxy mapping is as following.   
+```
+banyan build -p project1 -c dev --build-gate=true
+```
+The output of the proxy mapping is as following.
+```
+location /_api/project1/ {
+    ...
+}
+
+location /_api/project2/ {
+    ...
+}
+
+```
+
+Now, we want to set the proxy mapping for `project1` as `/project1/`. The command would go as following.   
+```
+banyan build -p project1 -c dev --build-gate=true --proxy-mapping=project1:/project1/
+```
+The output of the proxy mapping is as following.
+```
+location /_api/project2/ {
+    ...
+}
+
+location /project1/ {
+    ...
+}
+
+```
+
+
+
 ## config
 Configure the inventory items
 ```
