@@ -15,7 +15,7 @@ banyan init -p project1 -c dev
 Then the `dev.cfg` file will be found at `.workspace/project1/deploy/dev.cfg`
 
 ## build
-Build the all of the ansible scripts.
+Build all of the ansible scripts.
 ```
 banyan build -p project1 -c dev
 ```
@@ -26,7 +26,7 @@ This process will take two effects:
 ### Build without modifying the configuration
 If you want to skip the second effect, please run the following command.
 ```
-banyan build -p project1 -c dev --only-structure=True
+banyan build -p project1 -c dev --only-structure
 ```
 
 ### Build for remote deployment
@@ -38,11 +38,11 @@ banyan build -p project1 -c dev -r 10.0.0.1 -k ./remote_key -n remote_login
 ### Build authentication layer
 The autentication layer is designed to protect your microservices. This is useful when you expose your microservices to a none private environment. Of course, when you develop your microservice, you don't need it.
 ```
-banyan build -p project1 -c dev --build-gate=True
+banyan build -p project1 -c dev --build-gate
 ```
 This command will put all of the microservices behind the authentication layer. But sometimes, it is required to get some microservcies public. 
 ```
-banyan build -p project1 -c dev --build-gate=True --noauth=project2
+banyan build -p project1 -c dev --build-gate --noauth=project2
 ```
 This command will make project2 accessed without authentication.
 
@@ -58,7 +58,7 @@ workspace
 ```
 The build command with default proxy mapping is as following.   
 ```
-banyan build -p project1 -c dev --build-gate=true
+banyan build -p project1 -c dev --build-gate
 ```
 The output of the proxy mapping is as following.
 ```
@@ -74,7 +74,7 @@ location /_api/project2/ {
 
 Now, we want to set the proxy mapping for `project1` as `/project1/`. The command would go as following.   
 ```
-banyan build -p project1 -c dev --build-gate=true --proxy-mapping=project1:/project1/
+banyan build -p project1 -c dev --build-gate --proxy-mapping=project1:/project1/
 ```
 The output of the proxy mapping is as following.
 ```
