@@ -34,8 +34,9 @@ opt_configs = [
         "short": "s",
         "long": "only-structure",
         "dest": "only_structure",
+        "action": "store_true",
         "help": "only build the structure",
-        "default": "False"
+        "default": False
     },
     {
         "short": "k",
@@ -62,6 +63,7 @@ opt_configs = [
         "short": "g",
         "long": "build-gate",
         "dest": "build_gate",
+        "action": "store_true",
         "help": "default is false to not build the gate",
         "default": False
     },
@@ -112,11 +114,11 @@ def get_options(sys_args = None):
                 self.command = args[1]
                 self.giturl = options.giturl
                 self.tag = options.tag
-                self.only_structure = options.only_structure.strip().lower() == 'true'
+                self.only_structure = options.only_structure
                 self.key_file = options.key_file
                 self.remote_addr = options.remote_addr
                 self.user_name = options.user_name
-                self.build_gate = options.build_gate == True or (isinstance(options.build_gate, str) and  options.build_gate.lower() == "true")
+                self.build_gate = options.build_gate
                 self.role_tags = None if options.role_tags == None else options.role_tags.split(',')
                 self.proxy_mapping = options.proxy_mapping
                 self.noauth = options.noauth

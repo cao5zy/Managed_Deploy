@@ -64,6 +64,11 @@ server {
 
       location /_api/project2/ {
 
+        resolver	{{auth_db_ip}} valid=30s;
+	set 	$auth_db {{auth_db_ip}};
+	set 	$auth_db_port {{auth_db_port}};
+	rewrite_by_lua_file		/lua_app/access.lua;
+
 
 	proxy_pass http://project2/;
 	proxy_set_header Host $host:$server_port;
@@ -75,7 +80,7 @@ server {
       }
 
 
-      location / {
+      location /_api/project1/ {
 
         resolver	{{auth_db_ip}} valid=30s;
 	set 	$auth_db {{auth_db_ip}};
