@@ -137,11 +137,15 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
         
         modify_config(True)
 
-    if logger.title('build_gate').debug(build_gate) == True:
-        remove_gate()
-        gen_template()
-    else:
-        remove_gate()
+    try:
+        
+        if logger.title('build_gate').debug(build_gate) == True:
+            remove_gate()
+            gen_template()
+        else:
+            remove_gate()
+    except Exception as e:
+        logger.title('build_gate').error(e)
 
         
 

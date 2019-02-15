@@ -2,11 +2,11 @@
 from setuptools import setup, find_packages
 name = "mc_banyan"
 
-requires = ['demjson>=2.2.4', 'jinja2>=2.10', 'pyyaml>=3.13', 'shell>=1.0.1', 'codegenhelper>=0.0.13', 'fn', 'md_codegen>=0.5.0']
+requires = ['demjson>=2.2.4', 'jinja2>=2.10', 'pyyaml>=3.13', 'shell>=1.0.1', 'codegenhelper>=0.0.13', 'fn', 'md_codegen>=0.5.0', 'slogger>=1.2.1', 'requests>=2.21.0']
 
 setup(
     name = name,
-    version = '2.1.4',
+    version = '2.1.5',
     scripts = ["scripts/banyan"],
     author = 'Zongying Cao',
     author_email = 'zongying.cao@dxc.com',
