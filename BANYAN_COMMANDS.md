@@ -40,7 +40,10 @@ The autentication layer is designed to protect your microservices. This is usefu
 ```
 banyan build -p project1 -c dev --build-gate
 ```
-This command will put all of the microservices behind the authentication layer. But sometimes, it is required to get some microservcies public. 
+This command will put all of the microservices behind the authentication layer. But sometimes, it is required to get some microservcies public.
+The logs of `microservice-gate` is at `[deploy folder]/.microservice_gate/logs`.
+
+
 ```
 banyan build -p project1 -c dev --build-gate --noauth=project2
 ```
