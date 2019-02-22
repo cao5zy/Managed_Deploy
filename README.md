@@ -1,4 +1,6 @@
-# banyan #
+# Managed Deploy #
+Managed deploy is the project name. The execute name is Banyan. 
+
 Banyan is a microservice deployment management tool. It assumes that your microservice projects deployment are driven by ansible. If you are interesting in it, please make sure your project development is compliant to the [specifications](SPEC.md) and [banyan configuration](BANYAN_CFG.md).
 
 # Background  
