@@ -7,7 +7,6 @@ import demjson
 from fn import F
 import json
 from functools import reduce
-from assertpy import assert_that
 
 logger = Logger.getLogger(__name__)
 
@@ -121,7 +120,6 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
         return os.path.join(os.path.split(os.path.realpath(__file__))[0], "./auth_template")
 
     def open_config():
-        assert_that(get_config_path(project_name, config_name)).exists()
         return demjson.decode_file(get_config_path(project_name, config_name))
 
     def update_config(remove, config_data):
