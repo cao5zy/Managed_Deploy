@@ -1,11 +1,6 @@
 
-upstream	project2 {
-		server	     {{project2}}:{{project2_port}};
-		keepalive    2000;
-}
-
-upstream	project1 {
-		server	     {{project1}}:{{project1_port}};
+upstream	project3 {
+		server	     {{project3}}:{{project3_port}};
 		keepalive    2000;
 }
 
@@ -62,7 +57,7 @@ server {
        }
 
 
-      location /_api/project2/ {
+      location /_api/project3/ {
 
         resolver	{{auth_db_ip}} valid=30s;
 	set 	$auth_db {{auth_db_ip}};
@@ -70,30 +65,12 @@ server {
 	rewrite_by_lua_file		/lua_app/access.lua;
 
 
-	proxy_pass http://project2/;
+	proxy_pass http://project3/;
 	proxy_set_header Host $host:$server_port;
 	log_subrequest on;
 	log_not_found on;
-	error_log logs/project2.error.log debug;
-	access_log logs/project2.access.log;
-	allow	   all;
-      }
-
-
-      location /_api/project1/ {
-
-        resolver	{{auth_db_ip}} valid=30s;
-	set 	$auth_db {{auth_db_ip}};
-	set 	$auth_db_port {{auth_db_port}};
-	rewrite_by_lua_file		/lua_app/access.lua;
-
-
-	proxy_pass http://project1/;
-	proxy_set_header Host $host:$server_port;
-	log_subrequest on;
-	log_not_found on;
-	error_log logs/project1.error.log debug;
-	access_log logs/project1.access.log;
+	error_log logs/project3.error.log debug;
+	access_log logs/project3.access.log;
 	allow	   all;
       }
 

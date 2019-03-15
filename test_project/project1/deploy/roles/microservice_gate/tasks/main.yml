@@ -28,8 +28,7 @@
       - "{{public_port}}:{{public_port}}"
     recreate: yes
     links:
-      - "{{project2}}:{{project2}}"
-      - "{{project1}}:{{project1}}"
+      - "{{project3}}:{{project3}}"
 
     volumes:
       - "{{microservice_gate_root}}/logs:/usr/local/openresty/nginx/logs:Z"
