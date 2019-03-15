@@ -7,6 +7,7 @@ import demjson
 from fn import F
 import json
 from functools import reduce
+from assertpy import assert_that
 
 logger = Logger.getLogger(__name__)
 
@@ -44,15 +45,12 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
         def get_no_auth_projects():
             return list(filter(lambda n:n['noauth'], projects))
 
-        def remain(items):
-            return [n for n in projects if n not in items]
-
         try:
 
             if authorization:
-                return remain(get_authorized_project() + \
+                return get_authorized_project() + \
                                get_proxy_mapping_projects() + \
-                               get_no_auth_projects())
+                               get_no_auth_projects()
             else:
                 return projects
         except Exception as ex:
@@ -70,7 +68,8 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
                       F(proxy_mapping) >> \
                       F(root_path_at_last) >> \
                       F(no_auth) >> \
-                      F(build_authorization) \
+                      F(build_authorization) >> \
+                      F(remove_duplicate) \
             )(get_config_path(project_name, config_name))
         }
 
