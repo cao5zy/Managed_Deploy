@@ -92,6 +92,17 @@ location / {
 
 ```
 
+### Build for authorization
+If you want to protect your resources, you can use `--authorization=[project_name]`.
+
+For example, your service provides with 4 resources:
+- `books` with method `post`, `get`
+- `book` with methods `put`, `get`, `delete`
+- `users` with methods `post`, `get`
+- `user` with methods `put`, `get`, `delete`
+If you don't want everyone, for example, to have permission to `delete` the book, you can control it with `--authorization=[project_name]`.
+
+Here the `[project_name]` is the other service provided by you to control the access to the service. However, `managed_deploy` will generate it automatically for you in the future release.
 
 
 ## config
