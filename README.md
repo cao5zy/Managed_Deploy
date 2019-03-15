@@ -7,6 +7,9 @@ Banyan is a microservice deployment management tool. It assumes that your micros
 The banyan program assumes that the project subjects to [specifications](SPEC.md). Based on [specifications](SPEC.md), the depended project should be in the same folder.   
 
 # How to use it
+
+For more detailed information about commands, please go to [Commands](BANYAN_COMMANDS.md)
+
 ## Installation
 ```
 /usr/bin/python3 -m pip install mc_banyan
