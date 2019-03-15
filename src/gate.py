@@ -7,13 +7,14 @@ import demjson
 from fn import F
 import json
 from functools import reduce
+from assertpy import assert_that
 
 logger = Logger.getLogger(__name__)
 
 _auth_db_name = "auth_db"
 _microservice_gate_name = "microservice_gate"
 
-def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noauth = None):
+def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noauth = None, authorization = None):
     def remove_duplicate(projects):
         def work(result, item):
             if isinstance(result, list):
@@ -30,6 +31,38 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
                 
         return projects if len(projects) == 1 else [] if len(projects) == 0 else reduce(work, projects)
     
+
+    def build_authorization(projects):
+        '''
+            authorization is one of the service
+        '''
+        def get_authorized_project():
+            return list(filter(lambda n: n['project_name'] == authorization, projects))
+
+        def get_proxy_mapping_projects():
+            return list(filter(lambda n:n['has_customized_mapping'], projects))
+
+        def get_no_auth_projects():
+            return list(filter(lambda n:n['noauth'], projects))
+
+        def remain(items):
+            return [n for n in projects if n not in items]
+
+        try:
+
+            if authorization:
+                return remain(get_authorized_project() + \
+                               get_proxy_mapping_projects() + \
+                               get_no_auth_projects())
+            else:
+                return projects
+        except Exception as ex:
+            logger.title('build_authorization.error').error(ex)
+            logger.title('build_authorization.error.data').error(projects)
+            
+            raise ex
+
+    
     def data():
         return {
             "project_name": "roles",
@@ -37,7 +70,8 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
                       F(remove_duplicate) >> \
                       F(proxy_mapping) >> \
                       F(root_path_at_last) >> \
-                      F(no_auth)
+                      F(no_auth) >> \
+                      F(build_authorization) \
             )(get_config_path(project_name, config_name))
         }
 
@@ -48,13 +82,9 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
     
     def no_auth(all_config, no_auth_list = build_no_auth_list()):
         def build(item):
-            return {
-                'project_name': item['project_name'],
-                'project_path': item['project_path'],
-                'role_name': item['role_name'],
-                'proxy_mapping': item['proxy_mapping'],
-                'noauth': True if item['project_name'] in no_auth_list else False
-            }
+            item['noauth'] = True if item['project_name'] in no_auth_list else False
+            return item
+
         return list(map(lambda item: build(item), all_config))
     def build_mapping():
         '''convert the data
@@ -72,7 +102,8 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
                 'project_name': item['project_name'],
                 'project_path': item['project_path'],
                 'role_name': item['role_name'],
-                'proxy_mapping': '/_api/{}/'.format(item['project_name']) if len(get_mapping(item)) == 0 else get_mapping(item)[0][1]
+                'proxy_mapping': '/_api/{}/'.format(item['project_name']) if len(get_mapping(item)) == 0 else get_mapping(item)[0][1],
+                'has_customized_mapping': len(get_mapping(item)) > 0
             }
 
         return list(map(lambda item: build(item), all_config))
@@ -89,8 +120,8 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
     def template_path():
         return os.path.join(os.path.split(os.path.realpath(__file__))[0], "./auth_template")
 
-
     def open_config():
+        assert_that(get_config_path(project_name, config_name)).exists()
         return demjson.decode_file(get_config_path(project_name, config_name))
 
     def update_config(remove, config_data):
@@ -101,9 +132,12 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
         return config_data
 
     def save_config(config_data):
-        with open(get_config_path(project_name, config_name), 'w') as f:
-            json.dump(config_data, f, indent=4)
-
+        try:
+            with open(get_config_path(project_name, config_name), 'w') as f:
+                json.dump(config_data, f, indent=4)
+        except Exception as e:
+            logger.title('save_config.error').error(e)
+            logger.title('save_config.data').error(config_data)
             
     def modify_config(remove):
         (F(open_config) >>\
@@ -112,7 +146,7 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
          )()
     def gen_template():
         from md_codegen import run
-        run(output_path(), \
+        run(logger.title('gen_template.output_path').debug(output_path()), \
             "",\
             None,\
             None,\
@@ -145,7 +179,9 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
         else:
             remove_gate()
     except Exception as e:
-        logger.title('build_gate').error(e)
+        import traceback
+        logger.title('build_gate.error.trackback').error(''.join(traceback.format_tb(e.__traceback__)))
+        logger.title('build_gate.error').error(e)
 
         
 
