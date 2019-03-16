@@ -89,6 +89,13 @@ opt_configs = [
         "action": "append",
         "help": "do not specify the auth for project",
         "default": None
+    },
+    {
+        "short": "i",
+        "long": "authorization",
+        "dest": "authorization",
+        "help": "specify the service name for the authorization",
+        "default": None
     }
 ]
 def get_options(sys_args = None):
@@ -122,6 +129,7 @@ def get_options(sys_args = None):
                 self.role_tags = None if options.role_tags == None else options.role_tags.split(',')
                 self.proxy_mapping = options.proxy_mapping
                 self.noauth = options.noauth
+                self.authorization = options.authorization
                 
         return dumy()
 

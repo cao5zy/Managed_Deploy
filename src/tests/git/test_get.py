@@ -9,7 +9,6 @@ def setup_get():
 
 @with_setup(setup_get, remove_test_folder)
 def test_get():
-    project_name = "testrepo"
     giturl = "https://github.com/cao5zy/testrepo"
     tag = "v0.0.1"
     location = test_root()
@@ -19,11 +18,10 @@ def test_get():
 
 @with_setup(setup_get, remove_test_folder)
 def test_get_from_private_repo():
-    project_name = "codegen"
-    giturl = "git@github.dxc.com:zcao2/codegen.git"
-    tag = "v0.2.7"
+    giturl = "git@github.com:cao5zy/test_private_repo.git"
+    tag = "v1.0.0"
     location = test_root()
     get_tag(giturl, tag, location=location)
 
-    assert_that(os.path.join(test_root(), "codegen")).exists()
+    assert_that(os.path.join(test_root(), "test_private_repo")).exists()
 

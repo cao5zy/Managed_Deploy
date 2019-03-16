@@ -36,10 +36,10 @@ def run_deploy(project_name, config_name, tags = None):
 
     run(DeployInfo(get_deploy_path(project_name, config_name)))
 
-def build_deploy_script(project_name, config_name, only_structure=False, remote_dict = None, gate = False, proxy_mapping = None, noauth = None):
+def build_deploy_script(project_name, config_name, only_structure=False, remote_dict = None, gate = False, proxy_mapping = None, noauth = None, authorization = None):
     from .gate import build_gate
     
-    build_gate(project_name, config_name, gate, proxy_mapping, noauth)
+    build_gate(project_name, config_name, gate, proxy_mapping, noauth, authorization)
     build_deploy_script_internal(project_name, config_name, only_structure, remote_dict)
     
 def build_deploy_script_internal(project_name, config_name, only_structure=False, remote_dict = None):
