@@ -61,17 +61,21 @@ def build_gate(project_name, config_name, build_gate, proxy_mapping = None, noau
 
     
     def data():
-        return {
-            "project_name": "roles",
-            "items": (F(load_all_config) >> \
-                      F(remove_duplicate) >> \
-                      F(proxy_mapping) >> \
-                      F(root_path_at_last) >> \
-                      F(no_auth) >> \
-                      F(build_authorization) >> \
-                      F(remove_duplicate) \
-            )(get_config_path(project_name, config_name))
-        }
+        def dumy(projects):
+            assert_that(projects).is_not_empty()
+            assert_that(projects[0]).contains_key('project_name', 'project_path', 'role_name')
+            
+            return {
+                "project_name": "roles",
+                "items": (F(remove_duplicate) >> \
+                          F(proxy_mapping) >> \
+                          F(root_path_at_last) >> \
+                          F(no_auth) >> \
+                          F(build_authorization) >> \
+                          F(remove_duplicate) \
+                )(projects)
+            }
+        return dumy(load_all_config(get_config_path(project_name, config_name)))
 
     def build_no_auth_list():
         return [] if noauth == None else \
