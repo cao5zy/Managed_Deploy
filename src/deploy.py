@@ -52,7 +52,13 @@ def build_deploy_script_internal(project_name, config_name, only_structure=False
         open(put_file(deployInfo.playbook_path()), 'w').write(content)
 
     # write data to file
-    write_playbook(roles_build(get_roles_data(), remote_host=None if remote_dict is None else 'remote', remote_name=remote_dict["remote_user"] if remote_dict else None))
+    write_playbook( \
+                    roles_build( \
+                                 get_roles_data() \
+                                 , remote_host=None if remote_dict is None else 'remote' \
+                                 , remote_name=remote_dict["remote_user"] if remote_dict else None \
+                    ) \
+    )
     # build link for role folders
 
     roles_link(get_roles_data(), \
