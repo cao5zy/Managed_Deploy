@@ -1,6 +1,8 @@
 import os
+import re
 from fn import F
 import demjson
+from assertpy import assert_that
 from slogger import Logger
 from .util import get_project_path, extract_project_path, get_config_path
 
@@ -51,16 +53,30 @@ config_path: the path of the banyan configuration file
                                       ) \
                                 ) \
         )
-    
-    return put_auth_db_role_first( \
-                                   handle( \
-                                           demjson.decode_file(config_path) \
-                                           , [] \
-                                           , extract_project_path(config_path) \
-                                   ) \
-                                   )
-                                   
 
+    def put_all_db_first(roles):
+        def get_db_roles():
+            return list(filter(lambda n: is_db_role(n), roles))
+        def get_non_db_roles():
+            return list(filter(lambda n: not is_db_role(n), roles))
+
+        return get_db_roles() + get_non_db_roles()
+    
+    return (F(handle) \
+            >> F(put_all_db_first) \
+            >> F(put_auth_db_role_first) \
+            )( \
+               demjson.decode_file(config_path) \
+               , [] \
+               , extract_project_path(config_path) \
+               )
+               
+def is_db_role(role, role_re=lambda n: re.match(r'.*[\-\_]db$', n)):
+    assert_that(role).contains_key('role_name')
+
+    return role_re(role['role_name']) is not None
+
+    
 def load_all_dependencies(config_path, handler):
     dependencies = lambda: "dependencies"
     
