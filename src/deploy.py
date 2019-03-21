@@ -22,7 +22,7 @@ def run_deploy(project_name, config_name, tags=None):
             return "sudo ansible-playbook ./{yml_file} -i ./{host_file}".format(yml_file=deployInfo.playbook_name(), host_file=deployInfo.host_file_name())
 
         def build_tag(base_command):
-            return base_command if tags else \
+            return base_command if not tags else \
                 '{base_command} --tags "{tags}"'.format(base_command=base_command, tags=",".join(tags))
         
         p = subprocess.Popen(logger.title('cli').debug((F(build_base_command) >> F(build_tag))()), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=put_folder(deployInfo.deploy_folder_path()))
