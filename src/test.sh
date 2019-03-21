@@ -1,1 +1,0 @@
-nosetests --nologcapture -s tests
